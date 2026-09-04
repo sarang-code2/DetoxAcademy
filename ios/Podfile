@@ -36,5 +36,12 @@ target 'DetoxAcademy' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Some machines' file sync/indexing services tag freshly-installed Pods
+    # (notably the prebuilt Hermes framework) with extended attributes that
+    # codesign rejects at build time ("resource fork, Finder information,
+    # or similar detritus not allowed"). Strip them right after install so
+    # it can never reach the build step.
+    system("xattr -cr Pods 2>/dev/null")
   end
 end
