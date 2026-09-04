@@ -8,7 +8,8 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+      android:supportsRtl="true">
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -23,7 +24,7 @@
         <!-- Deep linking — see src/navigation/RootNavigator.tsx's `linking`
              config. android:autoVerify is left off on purpose: that's for
              App Links (https://), a different (and more involved) setup
-             than this custom-scheme example. -->
+             than a custom scheme. -->
         <intent-filter>
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
