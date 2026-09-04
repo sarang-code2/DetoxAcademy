@@ -54,6 +54,42 @@ Have an emulator booted (or a device connected), then:
 npm run android
 ```
 
+## Troubleshooting
+
+### `xcodebuild` fails on "[CP] Embed Pods Frameworks"
+
+If the build fails with something like:
+
+```
+PhaseScriptExecution [CP]\ Embed\ Pods\ Frameworks ...
+warning: Stale file '.../__preview.dylib' is located outside of the allowed root paths.
+```
+
+This is Xcode's "User Script Sandboxing" (introduced in Xcode 15) blocking
+CocoaPods' embed script from writing outside its declared sandbox. It
+affects any fresh Xcode 15+/16+ install and isn't specific to this repo or
+machine — you will hit it on a clean checkout too. Fix: in Xcode, select
+the top-level **DetoxAcademy** project (not a target) → **Build Settings**
+→ search **User Script Sandboxing** → set to **No** for both Debug and
+Release. Clean and rebuild.
+
+### Codesign fails with "resource fork, Finder information, or similar detritus not allowed"
+
+Usually points at `hermes.framework` specifically. Some pod downloads pick
+up extended attributes (`com.apple.FinderInfo`, `com.apple.fileprovider.fpfs`)
+that `codesign` refuses to sign — often from iCloud Drive sync or a similar
+File Provider service touching files under `Pods/` after `pod install`.
+Not guaranteed to happen on every machine, but if you see this error:
+
+```bash
+xattr -cr ios/Pods/hermes-engine
+xattr -cr ios/build   # or your DerivedData path, if you've already tried building
+```
+
+Then rebuild. If it recurs on every build, check whether the project
+folder itself is under iCloud Drive ("Desktop & Documents Folders" sync) —
+moving the checkout outside any synced folder usually resolves it for good.
+
 ## Deep linking
 
 The app registers the `detoxacademy://` URL scheme and maps routes to
